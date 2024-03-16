@@ -14,6 +14,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Locale;
 
 @Slf4j
 @PluginDescriptor(name = "TheleRune Updater", description = "Updates TheleRune on logout", enabledByDefault = false)
@@ -76,7 +77,12 @@ public class TheleruneUpdaterPlugin extends Plugin
 				HttpUrl url = new HttpUrl.Builder().scheme("https").host("rune.theleruby.com").addPathSegment("api")
                         .addPathSegment("update").addPathSegment(local.getName().replace(" ", "_"))
                         .addPathSegment("").addQueryParameter("api_key", config.apiKey()).build();
-				Request request = new Request.Builder().header("User-Agent", "RuneLite").url(url).build();
+				FormBody.Builder postDataBuilder = new FormBody.Builder();
+				for(Skill skill : Skill.values()) {
+					postDataBuilder.add(skill.name().toLowerCase(Locale.ROOT), String.valueOf(client.getSkillExperience(skill)));
+				}
+				RequestBody post = postDataBuilder.build();
+				Request request = new Request.Builder().header("User-Agent", "RuneLite").url(url).post(post).build();
 				okHttpClient.newCall(request).enqueue(new Callback()
 				{
 					@Override
