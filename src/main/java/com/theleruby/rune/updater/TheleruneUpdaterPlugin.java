@@ -81,6 +81,10 @@ public class TheleruneUpdaterPlugin extends Plugin
 				for(Skill skill : Skill.values()) {
 					postDataBuilder.add(skill.name().toLowerCase(Locale.ROOT), String.valueOf(client.getSkillExperience(skill)));
 				}
+				int collectionsLoggedValue = client.getVarpValue(2943);
+				if (collectionsLoggedValue > 0) {
+					postDataBuilder.add("collections_logged", String.valueOf(collectionsLoggedValue));
+				}
 				RequestBody post = postDataBuilder.build();
 				Request request = new Request.Builder().header("User-Agent", "RuneLite").url(url).post(post).build();
 				okHttpClient.newCall(request).enqueue(new Callback()
