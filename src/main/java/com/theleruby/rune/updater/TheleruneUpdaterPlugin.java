@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Locale;
 
 @Slf4j
-@PluginDescriptor(name = "TheleRune Updater", description = "Updates TheleRune on logout", enabledByDefault = false)
+@PluginDescriptor(name = "TheleRune Updater", description = "Updates TheleRune on logout")
 public class TheleruneUpdaterPlugin extends Plugin
 {
 	@Inject
