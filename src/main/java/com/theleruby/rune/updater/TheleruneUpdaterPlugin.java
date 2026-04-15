@@ -30,6 +30,7 @@ public class TheleruneUpdaterPlugin extends Plugin
 	private OkHttpClient okHttpClient;
 
 	private long lastAccountHash;
+	private String lastDisplayName;
 	private boolean shouldProcessLogin;
 	private long lastExperienceValue;
 	HashSet<WorldType> unsupportedWorldTypes;
@@ -39,6 +40,7 @@ public class TheleruneUpdaterPlugin extends Plugin
 	{
 		shouldProcessLogin = true;
 		lastAccountHash = -1L;
+		lastDisplayName = null;
 		unsupportedWorldTypes = new HashSet<>();
 		unsupportedWorldTypes.add(WorldType.SEASONAL);
 		unsupportedWorldTypes.add(WorldType.DEADMAN);
@@ -59,9 +61,9 @@ public class TheleruneUpdaterPlugin extends Plugin
 		}
 		else if (state == GameState.LOGIN_SCREEN)
 		{
-			Player local = client.getLocalPlayer();
-			if (local == null)
+			if (lastDisplayName == null || lastDisplayName.isEmpty())
 			{
+				log.debug("Last display name is not set");
 				return;
 			}
 			for (WorldType worldType : client.getWorldType())
@@ -76,9 +78,9 @@ public class TheleruneUpdaterPlugin extends Plugin
 			long experienceDiff = totalExperienceValue - lastExperienceValue;
 			if (experienceDiff >= 0 && experienceDiff >= config.minXP())
 			{
-				log.info("Submitting update for {}", local.getName());
+				log.info("Submitting update for {}", lastDisplayName);
 				HttpUrl url = new HttpUrl.Builder().scheme("https").host("rune.theleruby.com").addPathSegment("api")
-                        .addPathSegment("update").addPathSegment(local.getName().replace(" ", "_"))
+                        .addPathSegment("update").addPathSegment(lastDisplayName.replace(" ", "_"))
                         .addPathSegment("").addQueryParameter("api_key", config.apiKey()).build();
 				FormBody.Builder postDataBuilder = new FormBody.Builder();
 				for(Skill skill : Skill.values()) {
@@ -120,6 +122,11 @@ public class TheleruneUpdaterPlugin extends Plugin
 		if (shouldProcessLogin)
 		{
 			lastExperienceValue = client.getOverallExperience();
+			Player local = client.getLocalPlayer();
+			if (local != null)
+			{
+				lastDisplayName = local.getName();
+			}
 			shouldProcessLogin = false;
 		}
 	}
