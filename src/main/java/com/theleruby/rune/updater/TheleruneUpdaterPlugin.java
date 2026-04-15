@@ -43,6 +43,9 @@ public class TheleruneUpdaterPlugin extends Plugin
 		unsupportedWorldTypes.add(WorldType.SEASONAL);
 		unsupportedWorldTypes.add(WorldType.DEADMAN);
 		unsupportedWorldTypes.add(WorldType.NOSAVE_MODE);
+		unsupportedWorldTypes.add(WorldType.BETA_WORLD);
+		unsupportedWorldTypes.add(WorldType.TOURNAMENT_WORLD);
+		unsupportedWorldTypes.add(WorldType.FRESH_START_WORLD);
 	}
 
 	@Subscribe
